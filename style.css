@@ -27,19 +27,34 @@ body {
 }
 
 .display {
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+
     background-color: #3b3a3a;
     height: 100px;
     margin-bottom: 20px;
     padding-right: 1rem;
     color: #fff;
     font-size: 3.5rem;
-
-    display: flex;
-    justify-content: flex-end;
-    align-items: center;
 }
 
 .keypad {
-    background-color: #59525c;
     flex: 1;
+
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.keypad > button {
+    flex: 1;
+    flex-basis: 79.5px;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+#decimal, #equal {
+    flex-grow: 0;
 }
