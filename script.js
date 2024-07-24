@@ -35,4 +35,14 @@ buttons.forEach((button) => {
     button.addEventListener('mouseleave', (event) => {
         button.classList.remove("flash");
     });
+
+    button.addEventListener('click', (event) => {
+        const display = document.querySelector(".display");
+
+        if (event.target.classList.contains("operand") && 
+        display.textContent.length < 10) {
+            display.textContent += event.target.textContent;
+            firstNumber = display.textContent;
+        }
+    });
 });
