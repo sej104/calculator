@@ -49,6 +49,8 @@ body {
 .keypad > button {
     flex: 1;
     flex-basis: 79.5px;
+    color: #fff;
+    font-size: 1.4rem;
 
     display: flex;
     justify-content: center;
@@ -57,4 +59,16 @@ body {
 
 #decimal, #equal {
     flex-grow: 0;
+}
+
+.btn-top {
+    background-color: #585858;
+}
+
+.btn-bottom {
+    background-color: #939393;
+}
+
+.btn-right {
+    background-color: #ed962b;
 }
