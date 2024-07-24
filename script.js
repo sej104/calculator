@@ -39,10 +39,15 @@ buttons.forEach((button) => {
     button.addEventListener('click', (event) => {
         const display = document.querySelector(".display");
 
-        if (event.target.classList.contains("operand") && 
-        display.textContent.length < 10) {
+        if (event.target.classList.contains("operand") && display.textContent.length < 10) {
+            if (display.textContent === "0") display.textContent = "";
             display.textContent += event.target.textContent;
             firstNumber = display.textContent;
+        }
+
+        if (event.target.classList.contains("operator")) {
+            operator = event.target.textContent;
+            display.textContent = 0;
         }
     });
 });
