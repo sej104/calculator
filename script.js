@@ -52,7 +52,7 @@ buttons.forEach((button) => {
             if (display.textContent === "0") display.textContent = "";
             display.textContent += event.target.textContent;
 
-            if (operator === undefined) {
+            if (operator) {
                 firstNumber = display.textContent;
             } else {
                 secondNumber = display.textContent;
@@ -66,6 +66,13 @@ buttons.forEach((button) => {
 
         if (event.target.getAttribute("id") === "equal" && operator) {
             display.textContent = operate(firstNumber, secondNumber, operator);
+        }
+
+        if (event.target.getAttribute("id") === "clear") {
+            display.textContent = 0;
+            firstNumber = null;
+            secondNumber = null;
+            operator = null;
         }
     });
 });
