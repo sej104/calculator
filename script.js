@@ -3,7 +3,7 @@ let operator;
 let secondNumber;
 
 function add(a, b) {
-    return a + b;
+    return Number(a) + Number(b);
 }
 
 function subtract(a, b) {
@@ -18,8 +18,17 @@ function divide(a, b) {
     return a / b;
 }
 
-function operate(a, b, operator) {
-    return operator(a, b);
+function operate(a = 0, b = a, operator) {
+    switch (operator) {
+        case '+':
+            return add(a, b);
+        case '-':
+            return subtract(a, b);
+        case 'X':
+            return multiply(a, b);
+        case '/':
+            return divide(a, b);
+    }
 }
 
 const buttons = document.querySelectorAll("button");
@@ -53,6 +62,10 @@ buttons.forEach((button) => {
         if (event.target.classList.contains("operator")) {
             operator = event.target.textContent;
             display.textContent = 0;
+        }
+
+        if (event.target.getAttribute("id") === "equal") {
+            display.textContent = operate(firstNumber, secondNumber, operator);
         }
     });
 });
