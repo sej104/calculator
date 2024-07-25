@@ -64,7 +64,7 @@ buttons.forEach((button) => {
             display.textContent = 0;
         }
 
-        if (event.target.getAttribute("id") === "equal") {
+        if (event.target.getAttribute("id") === "equal" && operator) {
             display.textContent = operate(firstNumber, secondNumber, operator);
         }
     });
