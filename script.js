@@ -42,7 +42,12 @@ buttons.forEach((button) => {
         if (event.target.classList.contains("operand") && display.textContent.length < 10) {
             if (display.textContent === "0") display.textContent = "";
             display.textContent += event.target.textContent;
-            firstNumber = display.textContent;
+
+            if (operator === undefined) {
+                firstNumber = display.textContent;
+            } else {
+                secondNumber = display.textContent;
+            }
         }
 
         if (event.target.classList.contains("operator")) {
