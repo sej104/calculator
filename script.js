@@ -50,7 +50,7 @@ buttons.forEach((button) => {
         let target = event.target;
 
         if (target.classList.contains("operand") && display.textContent.length < 10) {
-            if (display.textContent === "0" || (firstNumber && operator)) {
+            if (display.textContent === "0" || (firstNumber && operator && !secondNumber)) {
                 display.textContent = "";
             }
             display.textContent += target.textContent;
