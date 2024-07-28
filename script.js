@@ -76,5 +76,15 @@ buttons.forEach((button) => {
             secondNumber = null;
             operator = null;
         }
+
+        if (target.getAttribute("id") === "negate" && display.textContent !== "0") {
+            if (secondNumber) {
+                secondNumber = -secondNumber;
+                display.textContent = secondNumber;
+            } else {
+                firstNumber = -firstNumber;
+                display.textContent = firstNumber;
+            }
+        }
     });
 });
