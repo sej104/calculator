@@ -1,9 +1,10 @@
+const buttons = document.querySelectorAll("button");
 let firstNumber;
 let operator;
 let secondNumber;
 
 function add(a, b) {
-    return Number(a) + Number(b);
+    return a + b;
 }
 
 function subtract(a, b) {
@@ -31,44 +32,46 @@ function operate(a = 0, b = a, operator) {
     }
 }
 
-const buttons = document.querySelectorAll("button");
 buttons.forEach((button) => {
-    button.addEventListener('mousedown', (event) => {
+    button.addEventListener('mousedown', () => {
         button.classList.toggle("flash");
     });
 
-    button.addEventListener('mouseup', (event) => {
+    button.addEventListener('mouseup', () => {
         button.classList.remove("flash");
     });
 
-    button.addEventListener('mouseleave', (event) => {
+    button.addEventListener('mouseleave', () => {
         button.classList.remove("flash");
     });
 
     button.addEventListener('click', (event) => {
         const display = document.querySelector(".display");
+        let target = event.target;
 
-        if (event.target.classList.contains("operand") && display.textContent.length < 10) {
-            if (display.textContent === "0") display.textContent = "";
-            display.textContent += event.target.textContent;
+        if (target.classList.contains("operand") && display.textContent.length < 10) {
+            if (display.textContent === "0") {
+                display.textContent = "";
+            }
+            display.textContent += target.textContent;
 
             if (operator) {
-                firstNumber = display.textContent;
-            } else {
                 secondNumber = display.textContent;
+            } else {
+                firstNumber = display.textContent;
             }
         }
 
-        if (event.target.classList.contains("operator")) {
-            operator = event.target.textContent;
+        if (target.classList.contains("operator")) {
+            operator = target.textContent;
             display.textContent = 0;
         }
 
-        if (event.target.getAttribute("id") === "equal" && operator) {
-            display.textContent = operate(firstNumber, secondNumber, operator);
+        if (target.getAttribute("id") === "equal" && operator) {
+            display.textContent = operate(Number(firstNumber), Number(secondNumber), operator);
         }
 
-        if (event.target.getAttribute("id") === "clear") {
+        if (target.getAttribute("id") === "clear") {
             display.textContent = 0;
             firstNumber = null;
             secondNumber = null;
