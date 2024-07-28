@@ -50,7 +50,7 @@ buttons.forEach((button) => {
         let target = event.target;
 
         if (target.classList.contains("operand") && display.textContent.length < 10) {
-            if (display.textContent === "0") {
+            if (display.textContent === "0" || (firstNumber && operator)) {
                 display.textContent = "";
             }
             display.textContent += target.textContent;
@@ -64,7 +64,6 @@ buttons.forEach((button) => {
 
         if (target.classList.contains("operator")) {
             operator = target.textContent;
-            display.textContent = 0;
         }
 
         if (target.getAttribute("id") === "equal" && operator) {
