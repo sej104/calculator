@@ -67,8 +67,11 @@ buttons.forEach((button) => {
         }
 
         if (target.getAttribute("id") === "equal" && operator) {
-            const result = operate(Number(firstNumber), Number(secondNumber), operator);
-            display.textContent = Math.round(result * 100) / 100;
+            let result = operate(Number(firstNumber), Number(secondNumber), operator);
+            if (result > 9999999999) {
+                result = result.toExponential(4);
+            }
+            display.textContent = result;
             firstNumber = display.textContent;
             secondNumber = null;
             operator = null;
@@ -105,6 +108,16 @@ buttons.forEach((button) => {
                 } else {
                     firstNumber += ".";
                 }
+                display.textContent = firstNumber;
+            }
+        }
+
+        if (target.getAttribute("id") === "percent" && display.textContent !== "0") {
+            if (secondNumber) {
+                secondNumber = secondNumber / 100;
+                display.textContent = secondNumber;
+            } else {
+                firstNumber = firstNumber / 100;
                 display.textContent = firstNumber;
             }
         }
