@@ -68,6 +68,9 @@ buttons.forEach((button) => {
 
         if (target.getAttribute("id") === "equal" && operator) {
             display.textContent = operate(Number(firstNumber), Number(secondNumber), operator);
+            firstNumber = display.textContent;
+            secondNumber = null;
+            operator = null;
         }
 
         if (target.getAttribute("id") === "clear") {
