@@ -67,7 +67,8 @@ buttons.forEach((button) => {
         }
 
         if (target.getAttribute("id") === "equal" && operator) {
-            display.textContent = operate(Number(firstNumber), Number(secondNumber), operator);
+            const result = operate(Number(firstNumber), Number(secondNumber), operator);
+            display.textContent = Math.round(result * 100) / 100;
             firstNumber = display.textContent;
             secondNumber = null;
             operator = null;
@@ -86,6 +87,24 @@ buttons.forEach((button) => {
                 display.textContent = secondNumber;
             } else {
                 firstNumber = -firstNumber;
+                display.textContent = firstNumber;
+            }
+        }
+
+        if (target.getAttribute("id") === "decimal" && !(display.textContent.includes("."))) {
+            if (operator) {
+                if (secondNumber === undefined || secondNumber === null) {
+                    secondNumber = "0.";
+                } else {
+                    secondNumber += ".";
+                }
+                display.textContent = secondNumber;
+            } else {
+                if (firstNumber === undefined || firstNumber === null) {
+                    firstNumber = "0."
+                } else {
+                    firstNumber += ".";
+                }
                 display.textContent = firstNumber;
             }
         }
