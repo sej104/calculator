@@ -1,7 +1,40 @@
 const buttons = document.querySelectorAll("button");
-let firstNumber;
-let operator;
-let secondNumber;
+const display = document.querySelector(".display");
+const expression = {
+    firstNumber: null,
+    secondNumber: null,
+    operator: null
+}
+
+function getFirstNumber() {
+    return expression.firstNumber;
+}
+
+function setFirstNumber(value) {
+    expression.firstNumber = value;
+}
+
+function getSecondNumber() {
+    return expression.secondNumber;
+}
+
+function setSecondNumber(value) {
+    expression.secondNumber = value;
+}
+
+function getOperator() {
+    return expression.operator;
+}
+
+function setOperator(value) {
+    expression.operator = value;
+}
+
+function resetExpression() {
+    for (key in expression) {
+        expression[key] = null;
+    }
+}
 
 function add(a, b) {
     return a + b;
@@ -19,7 +52,9 @@ function divide(a, b) {
     return a / b;
 }
 
-function operate(a = 0, b = a, operator) {
+function operate(a, b, operator) {
+    a = (a === null) ? 0 : Number(a);
+    b = (b === null) ? a : Number(b);
     switch (operator) {
         case '+':
             return add(a, b);
@@ -29,6 +64,68 @@ function operate(a = 0, b = a, operator) {
             return multiply(a, b);
         case '/':
             return divide(a, b);
+    }
+}
+
+function displayNumbers(target) {
+    if (
+        display.textContent === "0" || 
+        (getFirstNumber() !== null && 
+        getOperator() !== null && 
+        getSecondNumber() === null)
+    ) { 
+        display.textContent = ""; 
+    }
+    display.textContent += target.textContent;
+    if (getOperator() !== null) {
+        setSecondNumber(display.textContent);
+    } else {
+        setFirstNumber(display.textContent);
+    }
+}
+
+function calculateResult() {
+    const result = operate(getFirstNumber(), getSecondNumber(), 
+        getOperator());
+    display.textContent = result;
+    resetExpression();
+    setFirstNumber(display.textContent);
+}
+
+function clearDisplay() {
+    display.textContent = 0;
+    resetExpression();
+}
+
+function negateNumber() {
+    if (getSecondNumber() !== null) {
+        setSecondNumber( -(getSecondNumber()) );
+        display.textContent = getSecondNumber();
+    } else {
+        setFirstNumber( -(getFirstNumber()) );
+        display.textContent = getFirstNumber();
+    }
+}
+
+function convertToDecimal() {
+    if (getOperator() !== null) {
+        expression.secondNumber = (getSecondNumber() === null) ?
+            "0." : getSecondNumber() + ".";
+        display.textContent = getSecondNumber();
+    } else {
+        expression.firstNumber = (getFirstNumber() === null) ?
+            "0." : getFirstNumber() + ".";
+        display.textContent = getFirstNumber();
+    }
+}
+
+function convertToPercentage() {
+    if (getSecondNumber() !== null) {
+        setSecondNumber(getSecondNumber() / 100);
+        display.textContent = getSecondNumber();
+    } else {
+        setFirstNumber(getFirstNumber / 100);
+        display.textContent = getFirstNumber();
     }
 }
 
@@ -46,80 +143,49 @@ buttons.forEach((button) => {
     });
 
     button.addEventListener('click', (event) => {
-        const display = document.querySelector(".display");
-        let target = event.target;
+        const target = event.target;
 
-        if (target.classList.contains("operand") && display.textContent.length < 10) {
-            if (display.textContent === "0" || (firstNumber && operator && !secondNumber)) {
-                display.textContent = "";
-            }
-            display.textContent += target.textContent;
-
-            if (operator) {
-                secondNumber = display.textContent;
-            } else {
-                firstNumber = display.textContent;
-            }
+        if (
+            target.classList.contains("operand") && 
+            display.textContent.length < 10
+        ) {
+            displayNumbers(target);
+        } 
+        
+        else if (target.classList.contains("operator")) {
+            setOperator(target.textContent);
+        } 
+        
+        else if (
+            target.getAttribute("id") === "equal" && 
+            getOperator() !== null
+        ) {
+            calculateResult();
         }
 
-        if (target.classList.contains("operator")) {
-            operator = target.textContent;
+        else if (target.getAttribute("id") === "clear") {
+            clearDisplay();
         }
 
-        if (target.getAttribute("id") === "equal" && operator) {
-            let result = operate(Number(firstNumber), Number(secondNumber), operator);
-            if (result > 9999999999) {
-                result = result.toExponential(4);
-            }
-            display.textContent = result;
-            firstNumber = display.textContent;
-            secondNumber = null;
-            operator = null;
+        else if (
+            target.getAttribute("id") === "negate" && 
+            display.textContent !== "0"
+        ) {
+            negateNumber();
         }
 
-        if (target.getAttribute("id") === "clear") {
-            display.textContent = 0;
-            firstNumber = null;
-            secondNumber = null;
-            operator = null;
+        else if (
+            target.getAttribute("id") === "decimal" && 
+            !(display.textContent.includes("."))
+        ) {
+            convertToDecimal();
         }
 
-        if (target.getAttribute("id") === "negate" && display.textContent !== "0") {
-            if (secondNumber) {
-                secondNumber = -secondNumber;
-                display.textContent = secondNumber;
-            } else {
-                firstNumber = -firstNumber;
-                display.textContent = firstNumber;
-            }
-        }
-
-        if (target.getAttribute("id") === "decimal" && !(display.textContent.includes("."))) {
-            if (operator) {
-                if (secondNumber === undefined || secondNumber === null) {
-                    secondNumber = "0.";
-                } else {
-                    secondNumber += ".";
-                }
-                display.textContent = secondNumber;
-            } else {
-                if (firstNumber === undefined || firstNumber === null) {
-                    firstNumber = "0."
-                } else {
-                    firstNumber += ".";
-                }
-                display.textContent = firstNumber;
-            }
-        }
-
-        if (target.getAttribute("id") === "percent" && display.textContent !== "0") {
-            if (secondNumber) {
-                secondNumber = secondNumber / 100;
-                display.textContent = secondNumber;
-            } else {
-                firstNumber = firstNumber / 100;
-                display.textContent = firstNumber;
-            }
+        else if (
+            target.getAttribute("id") === "percent" && 
+            display.textContent !== "0"
+        ) {
+            convertToPercentage();
         }
     });
 });
