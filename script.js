@@ -128,7 +128,7 @@ function convertToPercentage() {
         setSecondNumber(getSecondNumber() / 100);
         display.textContent = getSecondNumber();
     } else {
-        setFirstNumber(getFirstNumber / 100);
+        setFirstNumber(getFirstNumber() / 100);
         display.textContent = getFirstNumber();
     }
 }
