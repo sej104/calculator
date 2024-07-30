@@ -37,11 +37,11 @@ function resetExpression() {
 }
 
 function add(a, b) {
-    return a + b;
+    return (a * 10 + b * 10) / 10;
 }
 
 function subtract(a, b) {
-    return a - b;
+    return (a * 10 - b * 10) / 10;
 }
 
 function multiply(a, b) {
@@ -88,9 +88,10 @@ function displayNumbers(target) {
 }
 
 function calculateResult() {
-    const result = operate(getFirstNumber(), getSecondNumber(), 
+    let result = operate(getFirstNumber(), getSecondNumber(), 
         getOperator());
-    display.textContent = result;
+    display.textContent = (result > 9_999_999) ? result.toExponential(2) :
+        result;
     resetExpression();
     setFirstNumber(display.textContent);
 }
@@ -178,8 +179,10 @@ buttons.forEach((button) => {
         }
 
         else if (
-            target.getAttribute("id") === "decimal" && 
-            !(display.textContent.includes("."))
+            target.getAttribute("id") === "decimal" &&
+            (getOperator() === null && !display.textContent.includes(".")) ||
+            (getOperator() !== null && (getSecondNumber() === null ||
+            !getSecondNumber().includes(".")))
         ) {
             convertToDecimal();
         }
