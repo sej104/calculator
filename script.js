@@ -160,6 +160,9 @@ buttons.forEach((button) => {
         } 
         
         else if (target.classList.contains("operator")) {
+            if (getOperator() !== null) {
+                calculateResult();
+            }
             setOperator(target.textContent);
         } 
         
