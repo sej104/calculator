@@ -1,39 +1,13 @@
 const buttons = document.querySelectorAll("button");
 const display = document.querySelector(".display");
-const expression = {
-    firstNumber: null,
-    secondNumber: null,
-    operator: null
-}
-
-function getFirstNumber() {
-    return expression.firstNumber;
-}
-
-function setFirstNumber(value) {
-    expression.firstNumber = value;
-}
-
-function getSecondNumber() {
-    return expression.secondNumber;
-}
-
-function setSecondNumber(value) {
-    expression.secondNumber = value;
-}
-
-function getOperator() {
-    return expression.operator;
-}
-
-function setOperator(value) {
-    expression.operator = value;
-}
+let firstNumber = null;
+let secondNumber = null;
+let operator = null;
 
 function resetExpression() {
-    for (key in expression) {
-        expression[key] = null;
-    }
+    firstNumber = null;
+    secondNumber = null;
+    operator = null;
 }
 
 function add(a, b) {
@@ -73,30 +47,31 @@ function operate(a, b, operator) {
 function displayNumbers(target) {
     if (
         display.textContent === "0" || 
-        (getFirstNumber() !== null && 
-        getOperator() !== null && 
-        getSecondNumber() === null)
+        (firstNumber !== null && operator !== null && secondNumber === null)
     ) { 
         display.textContent = ""; 
     }
     display.textContent += target.textContent;
-    if (getOperator() !== null) {
-        setSecondNumber(display.textContent);
+    if (operator !== null) {
+        secondNumber = display.textContent;
     } else {
-        setFirstNumber(display.textContent);
+        firstNumber = display.textContent;
     }
 }
 
-function calculateResult() {
-    let result = operate(getFirstNumber(), getSecondNumber(), 
-        getOperator());
-    display.textContent = (result > 9_999_999) ? result.toExponential(2) :
-        result;
-    if (display.textContent.length > 10) {
-        display.textContent = display.textContent.slice(0, 11);
+function setOperator(target) {
+    if (operator !== null) {
+        calculateResult();
     }
+    operator = target.textContent;
+}
+
+function calculateResult() {
+    const result = operate(firstNumber, secondNumber, operator);
+    display.textContent = 
+        (result > 9_999_999) ? result.toExponential(2) : result;
     resetExpression();
-    setFirstNumber(display.textContent);
+    firstNumber = display.textContent;
 }
 
 function clearDisplay() {
@@ -105,34 +80,32 @@ function clearDisplay() {
 }
 
 function negateNumber() {
-    if (getSecondNumber() !== null) {
-        setSecondNumber( -(getSecondNumber()) );
-        display.textContent = getSecondNumber();
+    if (secondNumber !== null) {
+        secondNumber = -(secondNumber);
+        display.textContent = secondNumber;
     } else {
-        setFirstNumber( -(getFirstNumber()) );
-        display.textContent = getFirstNumber();
+        firstNumber = -(firstNumber);
+        display.textContent = firstNumber;
     }
 }
 
 function convertToDecimal() {
-    if (getOperator() !== null) {
-        expression.secondNumber = (getSecondNumber() === null) ?
-            "0." : getSecondNumber() + ".";
-        display.textContent = getSecondNumber();
+    if (operator !== null) {
+        secondNumber = (secondNumber === null) ? "0." : secondNumber + ".";
+        display.textContent = secondNumber;
     } else {
-        expression.firstNumber = (getFirstNumber() === null) ?
-            "0." : getFirstNumber() + ".";
-        display.textContent = getFirstNumber();
+        firstNumber = (firstNumber === null) ? "0." : firstNumber + ".";
+        display.textContent = firstNumber;
     }
 }
 
 function convertToPercentage() {
-    if (getSecondNumber() !== null) {
-        setSecondNumber(getSecondNumber() / 100);
-        display.textContent = getSecondNumber();
+    if (secondNumber !== null) {
+        secondNumber = (secondNumber / 100);
+        display.textContent = secondNumber;
     } else {
-        setFirstNumber(getFirstNumber() / 100);
-        display.textContent = getFirstNumber();
+        firstNumber = (firstNumber / 100);
+        display.textContent = firstNumber;
     }
 }
 
@@ -153,51 +126,53 @@ buttons.forEach((button) => {
         const target = event.target;
 
         if (
-            target.classList.contains("operand") && 
-            display.textContent.length < 10
+            target.classList.contains("operand") && (
+            (operator === null && display.textContent.length < 10) ||
+            (operator !== null && secondNumber === null || 
+            display.textContent.length < 10))
         ) {
             displayNumbers(target);
         } 
         
-        else if (target.classList.contains("operator")) {
-            if (getOperator() !== null) {
-                calculateResult();
-            }
-            setOperator(target.textContent);
+        if (target.classList.contains("operator")) {
+            setOperator(target);
         } 
         
-        else if (
-            target.getAttribute("id") === "equal" && 
-            getOperator() !== null
+        if (
+            target.getAttribute("id") === "equal" && operator !== null
         ) {
             calculateResult();
         }
 
-        else if (target.getAttribute("id") === "clear") {
+        if (target.getAttribute("id") === "clear") {
             clearDisplay();
         }
 
-        else if (
+        if (
             target.getAttribute("id") === "negate" && 
             display.textContent !== "0"
         ) {
             negateNumber();
         }
 
-        else if (
-            target.getAttribute("id") === "decimal" &&
-            (getOperator() === null && !display.textContent.includes(".")) ||
-            (getOperator() !== null && (getSecondNumber() === null ||
-            !getSecondNumber().includes(".")))
+        if (
+            target.getAttribute("id") === "decimal" && (
+            (operator === null && !display.textContent.includes(".")) ||
+            (operator !== null && (secondNumber === null ||
+            !secondNumber.includes("."))))
         ) {
             convertToDecimal();
         }
 
-        else if (
+        if (
             target.getAttribute("id") === "percent" && 
             display.textContent !== "0"
         ) {
             convertToPercentage();
+        }
+
+        if (display.textContent.length > 10) {
+            display.textContent = display.textContent.slice(0, 11);
         }
     });
 });
