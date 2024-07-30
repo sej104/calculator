@@ -92,6 +92,9 @@ function calculateResult() {
         getOperator());
     display.textContent = (result > 9_999_999) ? result.toExponential(2) :
         result;
+    if (display.textContent.length > 10) {
+        display.textContent = display.textContent.slice(0, 11);
+    }
     resetExpression();
     setFirstNumber(display.textContent);
 }
